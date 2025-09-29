@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Hide any unwanted divs or elements */
+        div:not(.game-container) {
+            display: none !important;
+        }
+
+        body{
+            height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .game-container{
+            height: 450px;
+            width: 380px;
+            border: 1px solid rgba(100,255,218,0.3);
+            border-radius: 25px;
+            text-align: center;
+            background: rgba(26, 26, 46, 0.9);
+            box-shadow: 
+                0 15px 35px rgba(0,0,0,0.5),
+                0 5px 15px rgba(0,0,0,0.3),
+                inset 0 1px 0 rgba(100,255,218,0.1);
+            padding: 30px;
+            -webkit-backdrop-filter: blur(15px);
+            backdrop-filter: blur(15px);
+            position: relative;
+        }
+
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #64ffda, #00bcd4, #64ffda);
+            border-radius: 25px 25px 0 0;
+        }
+
+        h1 {
+            color: #64ffda;
+            margin-bottom: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(100,255,218,0.3);
+        }
+
+        p {
+            color: #b0bec5;
+            margin-bottom: 35px;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        input{
+           width: 300px;
+           height: 50px;
+           margin: 25px 0;
+           background: rgba(255,255,255,0.05);
+           border: 2px solid rgba(100,255,218,0.3);
+           border-radius: 15px;
+           outline: none;
+           text-align: center;
+           font-size: 18px;
+           color: #ffffff;
+           transition: all 0.3s ease;
+        }
+
+        input::placeholder {
+            color: rgba(176,190,197,0.7);
+        }
+
+        input:focus {
+            border-color: #64ffda;
+            box-shadow: 
+                0 0 20px rgba(100,255,218,0.3),
+                inset 0 0 20px rgba(100,255,218,0.1);
+            transform: scale(1.02);
+            background: rgba(255,255,255,0.1);
+        }
+
+        button{
+            padding: 18px 35px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(45deg, #64ffda, #00bcd4);
+            color: #1a1a2e;
+            margin: 25px 0;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 8px 25px rgba(100,255,218,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 12px 35px rgba(100,255,218,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+            background: linear-gradient(45deg, #00bcd4, #64ffda);
+        }
+
+        button:active {
+            transform: translateY(-1px);
+        }
+
+        h3 {
+            margin-top: 35px;
+            font-size: 18px;
+            color: #ffffff;
+            min-height: 30px;
+            transition: all 0.3s ease;
+            padding: 10px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+        }
+
+        /* Success state */
+        .success {
+            color: #4caf50 !important;
+            background: rgba(76,175,80,0.1) !important;
+            border: 1px solid rgba(76,175,80,0.3);
+        }
+
+        /* Low guess state */
+        .low {
+            color: #2196f3 !important;
+            background: rgba(33,150,243,0.1) !important;
+            border: 1px solid rgba(33,150,243,0.3);
+        }
+
+        /* High guess state */
+        .high {
+            color: #ff5722 !important;
+            background: rgba(255,87,34,0.1) !important;
+            border: 1px solid rgba(255,87,34,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Number Guessing Game</h1>
+        <p>Guess a number between 1-100</p>
+        <input type="number" placeholder="Enter your guess" min="1" max="100">
+        <br>
+        <button onclick="guess()">Submit Guess</button>
+        <h3>Make your guess!</h3>
+    </div>
+
+    <script>
+        let random = Math.floor(Math.random() * 100) + 1;
+        console.log("Secret number:", random); // For testing - remove in production
+
+        function guess(){
+            let num = Number(document.getElementsByTagName("input")[0].value);
+            let resultElement = document.getElementsByTagName("h3")[0];
+
+            // Reset classes
+            resultElement.className = '';
+
+            if(!num || num < 1 || num > 100){
+                resultElement.innerText = "⚠️ Please enter a valid number between 1-100!";
+                return;
+            }
+
+            if(random === num){
+                resultElement.innerText = "🎉 Congratulations! Your guess is correct!";
+                resultElement.className = 'success';
+            }
+            else if(random > num){
+                resultElement.innerText = "📈 Your guess is too low! Try higher.";
+                resultElement.className = 'low';
+            }
+            else{
+                resultElement.innerText = "📉 Your guess is too high! Try lower.";
+                resultElement.className = 'high';
+            }
+        }
+
+       
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementsByTagName("input")[0].addEventListener("keypress", function(e) {
+                if(e.key === "Enter") {
+                    guess();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
